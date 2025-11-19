@@ -13,6 +13,7 @@
     "lint": "next lint",
     "db:push": "prisma db push",
     "db:seed": "node scripts/add-featured-products.js",
+    "sync:images": "node scripts/sync-printful-with-images.js",
     "vercel-build": "prisma generate && prisma db push && node scripts/add-featured-products.js && next build",
     "postinstall": "prisma generate"
   },
