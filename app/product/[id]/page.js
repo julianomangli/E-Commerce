@@ -217,14 +217,20 @@ export default function ProductDetailsPage({ params }) {
 
         {/* Product Details */}
         <div className="flex flex-col">
-          <div className="mb-4">
+          <div className="mb-6">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              <h1 className="text-3xl font-bold text-gray-900 mb-4 leading-tight">
                 {product.name}
               </h1>
-              <p className="text-2xl font-semibold text-gray-900">
-                €{product.price.toFixed(2)}
-              </p>
+              <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-4 mb-4">
+                <p className="text-4xl font-bold text-green-700 flex items-center">
+                  <span className="text-green-600 text-2xl mr-2">€</span>
+                  {product.price.toFixed(2)}
+                  <span className="ml-3 text-lg font-normal text-green-600 bg-green-100 px-3 py-1 rounded-full">
+                    Free Shipping
+                  </span>
+                </p>
+              </div>
             </div>
           </div>
 
@@ -232,9 +238,12 @@ export default function ProductDetailsPage({ params }) {
             {product.description || "No description available."}
           </p>
 
-          {/* Color Selection */}
-          {((product.colors && product.colors.length > 0) || 
-            (product.variants && product.variants.filter(v => v.type === 'color').length > 0)) && (
+          {/* Color Selection - Only show if there are multiple colors */}
+          {(() => {
+            const availableColors = product.colors || 
+              product.variants?.filter(v => v.type === 'color').map(v => ({ name: v.value, hex: v.hex })) || [];
+            return availableColors.length > 1;
+          })() && (
             <div className="mb-6">
               <h3 className="text-sm font-medium text-gray-900 mb-3">Color</h3>
               <div className="flex gap-3">
@@ -244,16 +253,16 @@ export default function ProductDetailsPage({ params }) {
                   <button
                     key={color.name || color.hex}
                     onClick={() => setSelectedColor(color.hex || color.name)}
-                    className={`relative w-8 h-8 rounded-full border-2 transition-all ${
+                    className={`relative w-10 h-10 rounded-full border-3 transition-all shadow-lg hover:shadow-xl ${
                       selectedColor === (color.hex || color.name)
-                        ? "border-gray-900 scale-110"
+                        ? "border-gray-900 scale-110 ring-2 ring-gray-900 ring-offset-2"
                         : "border-gray-300 hover:border-gray-400"
                     }`}
                     style={{ backgroundColor: color.hex || color.name }}
                     title={color.name}
                   >
                     {selectedColor === (color.hex || color.name) && (
-                      <div className="absolute inset-0 rounded-full border-2 border-white" />
+                      <div className="absolute inset-1 rounded-full border-2 border-white" />
                     )}
                   </button>
                 ))}

@@ -310,36 +310,59 @@ function ProductsTab({ products, loading, onProductUpdate }) {
 
   const handleImageUpload = async (event, isEdit = false) => {
     const files = Array.from(event.target.files)
-    const uploadPromises = files.map(file => uploadImage(file))
+    
+    if (files.length === 0) return
     
     try {
       setUploading(true)
-      const urls = await Promise.all(uploadPromises)
-      const validUrls = urls.filter(url => url !== null)
+      const validUrls = []
       
-      if (isEdit) {
-        // Add to edit form
-        const currentImages = editFormData.images ? editFormData.images.split('\n').filter(url => url.trim()) : []
-        const allImages = [...currentImages, ...validUrls]
-        setEditFormData({
-          ...editFormData,
-          images: allImages.join('\n')
-        })
-      } else {
-        // Add to create form
-        const currentImages = newProductData.images ? newProductData.images.split('\n').filter(url => url.trim()) : []
-        const allImages = [...currentImages, ...validUrls]
-        setNewProductData({
-          ...newProductData,
-          images: allImages.join('\n')
-        })
+      for (const file of files) {
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+          alert(`❌ ${file.name} is not a valid image file`)
+          continue
+        }
+        
+        // Validate file size (max 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+          alert(`❌ ${file.name} is too large. Maximum size is 5MB`)
+          continue
+        }
+        
+        const url = await uploadImage(file)
+        if (url) {
+          validUrls.push(url)
+        }
       }
       
-      alert(`✅ ${validUrls.length} image(s) uploaded successfully!`)
+      if (validUrls.length > 0) {
+        if (isEdit) {
+          // Add to edit form
+          const currentImages = editFormData.images ? editFormData.images.split('\n').filter(url => url.trim()) : []
+          const allImages = [...currentImages, ...validUrls]
+          setEditFormData({
+            ...editFormData,
+            images: allImages.join('\n')
+          })
+        } else {
+          // Add to create form
+          const currentImages = newProductData.images ? newProductData.images.split('\n').filter(url => url.trim()) : []
+          const allImages = [...currentImages, ...validUrls]
+          setNewProductData({
+            ...newProductData,
+            images: allImages.join('\n')
+          })
+        }
+        
+        alert(`✅ ${validUrls.length} image(s) uploaded successfully!`)
+      }
     } catch (error) {
-      alert('❌ Some uploads failed: ' + error.message)
+      alert('❌ Upload failed: ' + error.message)
     } finally {
       setUploading(false)
+      // Clear the file input
+      event.target.value = ''
     }
   }
 
