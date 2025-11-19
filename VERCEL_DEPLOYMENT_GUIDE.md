@@ -1,4 +1,4 @@
-# Vercel Deployment Setup
+# Mangli Website - Vercel Deployment Setup
 
 ## 🚀 Pre-Deployment Checklist
 

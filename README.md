@@ -1,4 +1,4 @@
-# Modern E-Commerce Platform 🛍️
+# Mangli Website - E-Commerce Platform 🛍️
 
 A sophisticated, production-ready e-commerce platform built with Next.js 15, featuring real-time cart management, analytics tracking, Stripe payments, and modern design patterns.
 
