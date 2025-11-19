@@ -88,6 +88,29 @@ function AdminDashboard() {
     router.push('/admin')
   }
 
+  // Force clear all products and add real ones
+  const forceClearAndAddReal = async () => {
+    try {
+      const result = await fetch('/api/force-clear-products', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+
+      const data = await result.json()
+      
+      if (result.ok) {
+        alert(`✅ Success! Added ${data.totalProducts} products including your Son Goku T-shirt!`)
+        fetchProducts() // Refresh the product list
+      } else {
+        alert('❌ Error: ' + data.error)
+      }
+    } catch (error) {
+      alert('❌ Error: ' + error.message)
+    }
+  }
+
   // Clear demo products and add real ones
   const clearDemoProducts = async () => {
     try {
@@ -211,6 +234,12 @@ function AdminDashboard() {
                 className="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
               >
                 🗑️ Clear Demo Products
+              </button>
+              <button
+                onClick={forceClearAndAddReal}
+                className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+              >
+                🚀 Force Real Products
               </button>
               <button
                 onClick={logout}

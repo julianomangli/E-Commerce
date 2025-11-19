@@ -149,6 +149,16 @@ async function addFeaturedProducts() {
     const { variants, images, ...product } = productData
     
     try {
+      // Check if product already exists
+      const existingProduct = await prisma.product.findUnique({
+        where: { sku: product.sku }
+      })
+
+      if (existingProduct) {
+        console.log(`✅ Product ${product.name} already exists, skipping...`)
+        continue
+      }
+
       const createdProduct = await prisma.product.create({
         data: {
           ...product,
