@@ -1,0 +1,54 @@
+# Dependencies
+node_modules/
+.next/
+.vercel/
+dist/
+build/
+
+# Environment Variables - NEVER commit these!
+.env.local
+.env
+.env.production
+.env.development
+
+# Database
+*.db
+*.sqlite
+prisma/dev.db
+
+# User Uploads - Don't commit uploaded images
+public/uploads/
+uploads/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Testing
+coverage/
+
+# Temporary files
+tmp/
+temp/

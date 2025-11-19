@@ -1,0 +1,317 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "sqlite"
+  url = env("DATABASE_URL")
+}
+
+// User model for authentication
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  phone     String?
+  firstName String?
+  lastName  String?
+  avatar    String?
+  isActive  Boolean  @default(true)
+  lastLogin DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  orders    Order[]
+  reviews   Review[]
+  addresses Address[]
+  sessions  CustomerSession[]
+
+  @@map("users")
+}
+
+// Product model
+model Product {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  price       Float
+  imageSrc    String
+  imageAlt    String?
+  category    String
+  subcategory String?
+  brand       String?
+  sku         String?  @unique
+  weight      Float?
+  dimensions  String?  // JSON: {"width": 10, "height": 20, "depth": 5}
+  tags        String?  // comma separated
+  inStock     Boolean  @default(true)
+  stockCount  Int      @default(0)
+  isActive    Boolean  @default(true)
+  isFeatured  Boolean  @default(false)
+  viewCount   Int      @default(0)
+  saleCount   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  variants    ProductVariant[]
+  orderItems  OrderItem[]
+  reviews     Review[]
+  images      ProductImage[]
+  events      CustomerEvent[]
+
+  @@map("products")
+}
+
+// Product images model for multiple images per product
+model ProductImage {
+  id        String @id @default(cuid())
+  productId String
+  imageUrl  String
+  altText   String?
+  order     Int    @default(0) // for sorting images
+  createdAt DateTime @default(now())
+
+  // Relations
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("product_images")
+}
+
+// Product variants (colors, sizes)
+model ProductVariant {
+  id        String @id @default(cuid())
+  productId String
+  type      String // "color" or "size"
+  value     String // "red", "Large", etc.
+  hex       String? // for colors
+  inStock   Boolean @default(true)
+
+  // Relations
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("product_variants")
+}
+
+// Shopping cart
+model CartItem {
+  id        String   @id @default(cuid())
+  userId    String   // Just a string, not a foreign key
+  productId String   // Just a string, not a foreign key
+  quantity  Int      @default(1)
+  colorName String?
+  size      String?
+  createdAt DateTime @default(now())
+
+  @@unique([userId, productId, colorName, size])
+  @@map("cart_items")
+}
+
+// Orders
+model Order {
+  id          String      @id @default(cuid())
+  userId      String
+  orderNumber String      @unique
+  status      OrderStatus @default(PENDING)
+  totalAmount Float
+  
+  // Shipping details
+  shippingFirstName String
+  shippingLastName  String
+  shippingAddress1  String
+  shippingAddress2  String?
+  shippingCity      String
+  shippingRegion    String?
+  shippingPostalCode String
+  shippingCountry   String
+  deliveryNotes     String?
+  
+  // Billing
+  billingSameAsShipping Boolean @default(true)
+  
+  shippingMethod String
+  shippingCost   Float
+  taxAmount      Float
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user       User        @relation(fields: [userId], references: [id])
+  orderItems OrderItem[]
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id        String @id @default(cuid())
+  orderId   String
+  productId String
+  quantity  Int
+  price     Float
+  colorName String?
+  size      String?
+
+  // Relations
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id])
+
+  @@map("order_items")
+}
+
+// User addresses
+model Address {
+  id         String  @id @default(cuid())
+  userId     String
+  firstName  String
+  lastName   String
+  address1   String
+  address2   String?
+  city       String
+  region     String?
+  postalCode String
+  country    String
+  isDefault  Boolean @default(false)
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("addresses")
+}
+
+// Product reviews
+model Review {
+  id        String   @id @default(cuid())
+  userId    String
+  productId String
+  rating    Int      // 1-5 stars
+  title     String?
+  comment   String?
+  createdAt DateTime @default(now())
+
+  // Relations
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId])
+  @@map("reviews")
+}
+
+// Customer session tracking for real-time analytics
+model CustomerSession {
+  id            String    @id @default(cuid())
+  sessionId     String    @unique
+  userId        String?   // References User table for registered users
+  visitorId     String?   // Simple string field for visitor IDs
+  ipAddress     String?
+  userAgent     String?
+  country       String?
+  city          String?
+  device        String?
+  browser       String?
+  isActive      Boolean   @default(true)
+  lastActivity  DateTime  @default(now())
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  user          User?           @relation(fields: [userId], references: [id], onDelete: SetNull)
+  pageViews     PageView[]
+  events        CustomerEvent[]
+
+  @@map("customer_sessions")
+}
+
+// Page view tracking
+model PageView {
+  id        String          @id @default(cuid())
+  sessionId String
+  path      String
+  title     String?
+  duration  Int?            // in seconds
+  createdAt DateTime        @default(now())
+
+  // Relations
+  session   CustomerSession @relation(fields: [sessionId], references: [sessionId], onDelete: Cascade)
+
+  @@map("page_views")
+}
+
+// Customer events (clicks, add to cart, etc.)
+model CustomerEvent {
+  id         String          @id @default(cuid())
+  sessionId  String
+  visitorId  String?         // Simple string field for visitor IDs
+  eventType  EventType
+  eventData  String?         // JSON data
+  productId  String?
+  value      Float?          // for purchase events
+  createdAt  DateTime        @default(now())
+
+  // Relations
+  session    CustomerSession @relation(fields: [sessionId], references: [sessionId], onDelete: Cascade)
+  product    Product?        @relation(fields: [productId], references: [id], onDelete: SetNull)
+
+  @@map("customer_events")
+}
+
+enum EventType {
+  SESSION_START
+  PAGE_VIEW
+  PRODUCT_VIEW
+  ADD_TO_CART
+  REMOVE_FROM_CART
+  ADD_TO_WISHLIST
+  REMOVE_FROM_WISHLIST
+  SEARCH
+  PURCHASE
+  CHECKOUT_START
+  CHECKOUT_COMPLETE
+  USER_REGISTER
+  USER_LOGIN
+  USER_LOGOUT
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+// Visitor Profile model for tracking all visitors
+model VisitorProfile {
+  id               String   @id @default(cuid())
+  userId           String   @unique  // Permanent visitor ID
+  userAgent        String?
+  device           String?  // Mobile, Tablet, Desktop
+  browser          String?  // Chrome, Firefox, Safari, etc.
+  country          String?
+  countryCode      String?
+  city             String?
+  region           String?
+  ipAddress        String?
+  timezone         String?
+  isp              String?
+  referrer         String?  // Where they came from
+  initialPage      String?  // First page visited
+  language         String?
+  screenResolution String?
+  firstVisit       DateTime @default(now())
+  lastVisit        DateTime @updatedAt
+  totalSessions    Int      @default(0)
+  totalPageViews   Int      @default(0)
+  totalTimeSpent   Int      @default(0) // in minutes
+  isActive         Boolean  @default(true)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@map("visitor_profiles")
+}

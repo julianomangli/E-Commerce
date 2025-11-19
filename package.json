@@ -1,0 +1,41 @@
+{
+  "name": "modern-ecommerce",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A modern e-commerce platform built with Next.js, Prisma, and Stripe",
+  "keywords": ["ecommerce", "nextjs", "prisma", "stripe", "tailwindcss"],
+  "scripts": {
+    "dev": "next dev",
+    "build": "prisma generate && prisma db push && next build",
+    "postbuild": "prisma db push && node scripts/add-featured-products.js",
+    "start": "next start",
+    "lint": "next lint",
+    "db:push": "prisma db push",
+    "db:seed": "node scripts/add-featured-products.js",
+    "vercel-build": "prisma generate && prisma db push && node scripts/add-featured-products.js && next build",
+    "postinstall": "prisma generate"
+  },
+  "dependencies": {
+    "@headlessui/react": "^2.2.9",
+    "@heroicons/react": "^2.2.0",
+    "@prisma/client": "^6.19.0",
+    "@stripe/react-stripe-js": "^5.3.0",
+    "@stripe/stripe-js": "^8.4.0",
+    "chart.js": "^4.5.1",
+    "dotenv": "^17.2.3",
+    "next": "15.5.5",
+    "prisma": "^6.19.0",
+    "react": "19.2.0",
+    "react-chartjs-2": "^5.3.1",
+    "react-dom": "19.2.0",
+    "react-icons": "^5.5.0",
+    "sqlite3": "^5.1.7",
+    "stripe": "^19.3.1"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.17"
+  }
+}

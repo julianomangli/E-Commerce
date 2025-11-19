@@ -1,0 +1,84 @@
+datasource db {
+  provider = "postgresql"
+  url = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+// User model for authentication
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  phone     String?
+  address   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Product model
+model Product {
+  id          Int              @id @default(autoincrement())
+  name        String
+  description String?
+  price       Float
+  printfulId  String?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  images      ProductImage[]
+  variants    ProductVariant[]
+}
+
+// Product Images
+model ProductImage {
+  id        Int     @id @default(autoincrement())
+  productId Int
+  url       String
+  alt       String?
+  isPrimary Boolean @default(false)
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+}
+
+// Product Variants (sizes, colors, etc.)
+model ProductVariant {
+  id                Int     @id @default(autoincrement())
+  productId         Int
+  printfulVariantId String?
+  size              String?
+  color             String?
+  price             Float
+  product           Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+}
+
+// Visitor tracking for analytics
+model Visitor {
+  id          String    @id @default(cuid())
+  sessionId   String?   @unique
+  ipAddress   String?
+  userAgent   String?
+  country     String?
+  city        String?
+  createdAt   DateTime  @default(now())
+  pageViews   PageView[]
+}
+
+// Page views for analytics
+model PageView {
+  id        String   @id @default(cuid())
+  visitorId String
+  path      String
+  title     String?
+  createdAt DateTime @default(now())
+  visitor   Visitor  @relation(fields: [visitorId], references: [id], onDelete: Cascade)
+
+  @@index([visitorId])
+  @@index([path])
+}
