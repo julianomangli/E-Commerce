@@ -1,4 +1,4 @@
-# KAMEHA Admin Panel
+# Mangli Website Admin Panel
 
 ## 🔑 Admin Access
 
