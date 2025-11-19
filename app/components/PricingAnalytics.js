@@ -6,9 +6,9 @@ export function PricingAnalytics({ products = [] }) {
     averageProfit: 0,
     totalProducts: 0,
     profitRanges: {
-      low: 0,    // €0-5
-      medium: 0, // €5-8
-      high: 0    // €8+
+      low: 0,    // EUR 0-5
+      medium: 0, // EUR 5-8
+      high: 0    // EUR 8+
     },
     categoryBreakdown: {}
   })
@@ -22,9 +22,9 @@ export function PricingAnalytics({ products = [] }) {
     const averageProfit = validProducts.length > 0 ? totalProfit / validProducts.length : 0
 
     const profitRanges = {
-      low: validProducts.filter(p => p.yourTotalProfit < 10).length,     // Less than €10 total
-      medium: validProducts.filter(p => p.yourTotalProfit >= 10 && p.yourTotalProfit < 15).length,  // €10-15 total
-      high: validProducts.filter(p => p.yourTotalProfit >= 15).length    // €15+ total
+      low: validProducts.filter(p => p.yourTotalProfit < 10).length,     // Less than EUR 10 total
+      medium: validProducts.filter(p => p.yourTotalProfit >= 10 && p.yourTotalProfit < 15).length,  // EUR 10-15 total
+      high: validProducts.filter(p => p.yourTotalProfit >= 15).length    // EUR 15+ total
     }
 
     // Category breakdown
@@ -59,9 +59,9 @@ export function PricingAnalytics({ products = [] }) {
   }, [products])
 
   const getProfitColor = (profit) => {
-    if (profit < 10) return 'text-red-600 bg-red-50'      // Less than €10 total
-    if (profit < 15) return 'text-yellow-600 bg-yellow-50' // €10-15 total  
-    return 'text-green-600 bg-green-50'                    // €15+ total
+    if (profit < 10) return 'text-red-600 bg-red-50'      // Less than EUR 10 total
+    if (profit < 15) return 'text-yellow-600 bg-yellow-50' // EUR 10-15 total  
+    return 'text-green-600 bg-green-50'                    // EUR 15+ total
   }
 
   const getProfitBadge = (profit) => {
@@ -90,7 +90,7 @@ export function PricingAnalytics({ products = [] }) {
           <div className="text-2xl font-bold text-green-600">{analytics.profitRanges.high}</div>
         </div>
         <div className="bg-white p-4 rounded-lg shadow border">
-          <div className="text-sm font-medium text-gray-500">Low Profit (<€10)</div>
+          <div className="text-sm font-medium text-gray-500">Low Profit (Less than €10)</div>
           <div className="text-2xl font-bold text-red-600">{analytics.profitRanges.low}</div>
         </div>
       </div>
