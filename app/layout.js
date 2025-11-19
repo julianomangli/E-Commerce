@@ -1,6 +1,7 @@
 import './globals.css'
 import { CartProvider } from '../contexts/CartContext'
 import { WishlistProvider } from '../contexts/WishlistContext'
+import { Analytics } from '@vercel/analytics/react'
 
 export const metadata = {
   title: 'Mangli Website',
@@ -23,6 +24,7 @@ export default function RootLayout({ children }) {
         <CartProvider>
           <WishlistProvider>
             {children}
+            <Analytics />
           </WishlistProvider>
         </CartProvider>
       </body>

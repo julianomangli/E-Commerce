@@ -88,6 +88,53 @@ function AdminDashboard() {
     router.push('/admin')
   }
 
+  // Clear demo products and add real ones
+  const clearDemoProducts = async () => {
+    try {
+      const result = await fetch('/api/clear-demo-products', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+
+      const data = await result.json()
+      
+      if (result.ok) {
+        alert('✅ Demo products cleared! Your real Printful products are now showing.')
+        fetchProducts() // Refresh the product list
+      } else {
+        alert('❌ Error clearing demo products: ' + data.error)
+      }
+    } catch (error) {
+      alert('❌ Error: ' + error.message)
+    }
+  }
+
+  // Sync products with image downloads
+  const syncWithImages = async () => {
+    try {
+      const result = await fetch('/api/sync-printful-images', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+
+      const data = await result.json()
+      
+      if (result.ok) {
+        alert('✅ Products synced with images downloaded!')
+        fetchProducts() // Refresh the product list
+      } else {
+        alert('❌ Error syncing with images: ' + data.error)
+      }
+    } catch (error) {
+      alert('❌ Error: ' + error.message)
+    }
+  }
+
+  // Regular Printful sync (without image downloads)
   const syncPrintfulProducts = async () => {
     try {
       const response = await fetch('/api/admin/sync-printful', {
@@ -152,6 +199,18 @@ function AdminDashboard() {
                 className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
               >
                 🔄 Sync Printful
+              </button>
+              <button
+                onClick={syncWithImages}
+                className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+              >
+                📥 Full Sync + Images
+              </button>
+              <button
+                onClick={clearDemoProducts}
+                className="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+              >
+                🗑️ Clear Demo Products
               </button>
               <button
                 onClick={logout}
