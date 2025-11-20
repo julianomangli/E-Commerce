@@ -34,38 +34,22 @@ export async function GET() {
 
     console.log(`✅ Found ${products.length} products in database`)
 
-    // If no products found, return fallback data
+    // If no products found, return empty array instead of demo products
     if (products.length === 0) {
-      console.log('⚠️ No products in database, returning fallback data')
-      return NextResponse.json([
-        {
-          id: '1',
-          name: 'Professional Laptop Backpack',
-          price: 79.99,
-          imageSrc: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500',
-          imageAlt: 'Professional laptop backpack',
-          colors: [
-            { name: 'Black', hex: '#000000' },
-            { name: 'Navy', hex: '#1e40af' },
-            { name: 'Gray', hex: '#6b7280' }
-          ],
-          sizes: [],
-          category: 'Accessories',
-          description: 'A durable and stylish laptop backpack perfect for professionals.',
-          inStock: true,
-          images: [
-            'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500',
-            'https://images.unsplash.com/photo-1622260614153-03223fb72052?w=500'
-          ]
-        }
-      ])
+      console.log('⚠️ No products in database')
+      return NextResponse.json([])
     }
 
     // Transform data to match your existing format
     const transformedProducts = products.map(product => {
-      const colors = product.variants
+      // Get unique colors only (no duplicates)
+      const allColors = product.variants
         .filter(v => v.type === 'color')
         .map(v => ({ name: v.value, hex: v.hex }))
+      
+      const colors = allColors.filter((color, index, self) => 
+        index === self.findIndex(c => c.name === color.name && c.hex === color.hex)
+      )
       
       const sizes = product.variants
         .filter(v => v.type === 'size')
@@ -104,65 +88,8 @@ export async function GET() {
     console.error('Database URL set:', process.env.DATABASE_URL ? 'YES' : 'NO')
     console.error('Node environment:', process.env.NODE_ENV)
     
-    // Return fallback products on error
-    console.log('🔄 Returning fallback products due to error')
-    return NextResponse.json([
-      {
-        id: '1',
-        name: 'Professional Laptop Backpack',
-        price: 79.99,
-        imageSrc: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500',
-        imageAlt: 'Professional laptop backpack',
-        colors: [
-          { name: 'Black', hex: '#000000' },
-          { name: 'Navy', hex: '#1e40af' },
-          { name: 'Gray', hex: '#6b7280' }
-        ],
-        sizes: [],
-        category: 'Accessories',
-        description: 'A durable and stylish laptop backpack perfect for professionals.',
-        inStock: true,
-        images: [
-          'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500',
-          'https://images.unsplash.com/photo-1622260614153-03223fb72052?w=500'
-        ]
-      },
-      {
-        id: '2',
-        name: 'Wireless Headphones',
-        price: 199.99,
-        imageSrc: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500',
-        imageAlt: 'Wireless headphones',
-        colors: [
-          { name: 'Black', hex: '#000000' },
-          { name: 'White', hex: '#ffffff' }
-        ],
-        sizes: [],
-        category: 'Electronics',
-        description: 'High-quality wireless headphones with noise cancellation.',
-        inStock: true,
-        images: [
-          'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500'
-        ]
-      },
-      {
-        id: '3',
-        name: 'Coffee Mug Set',
-        price: 34.99,
-        imageSrc: 'https://images.unsplash.com/photo-1514228742587-6b1558fcf93a?w=500',
-        imageAlt: 'Ceramic coffee mug set',
-        colors: [
-          { name: 'White', hex: '#ffffff' },
-          { name: 'Blue', hex: '#3b82f6' }
-        ],
-        sizes: [],
-        category: 'Home',
-        description: 'Beautiful ceramic coffee mug set for your morning routine.',
-        inStock: true,
-        images: [
-          'https://images.unsplash.com/photo-1514228742587-6b1558fcf93a?w=500'
-        ]
-      }
-    ])
+    // Return empty array on error instead of demo products
+    console.log('🔄 Returning empty products array due to error')
+    return NextResponse.json([])
   }
 }
