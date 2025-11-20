@@ -288,20 +288,40 @@ function ProductsTab({ products, loading, onProductUpdate }) {
 
     try {
       setUploading(true)
+      
+      // Validate file on client side first
+      if (!file.type.startsWith('image/')) {
+        throw new Error(`Invalid file type: ${file.type}. Please use JPG, PNG, or WebP images.`)
+      }
+      
+      if (file.size > 5 * 1024 * 1024) {
+        throw new Error(`File too large: ${(file.size / 1024 / 1024).toFixed(1)}MB. Maximum size is 5MB.`)
+      }
+      
+      console.log('Uploading file:', file.name, 'Size:', file.size, 'Type:', file.type)
+      
       const response = await fetch('/api/upload', {
         method: 'POST',
         body: formData,
       })
 
       const result = await response.json()
+      console.log('Upload response:', result)
       
-      if (result.success) {
+      if (!response.ok) {
+        throw new Error(result.error || `HTTP ${response.status}: ${response.statusText}`)
+      }
+      
+      if (result.success && result.url) {
+        console.log('Upload successful:', result.url)
         return result.url
       } else {
-        throw new Error(result.error)
+        throw new Error(result.error || 'Upload failed - no URL returned')
       }
     } catch (error) {
-      alert('❌ Upload failed: ' + error.message)
+      console.error('Upload error details:', error)
+      const errorMsg = error.message || 'Unknown upload error'
+      alert(`❌ Upload failed: ${errorMsg}`)
       return null
     } finally {
       setUploading(false)

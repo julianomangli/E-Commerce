@@ -238,18 +238,32 @@ export default function ProductDetailsPage({ params }) {
             {product.description || "No description available."}
           </p>
 
-          {/* Color Selection - Only show if there are multiple colors */}
+          {/* Color Selection - Only show if there are multiple different colors */}
           {(() => {
             const availableColors = product.colors || 
               product.variants?.filter(v => v.type === 'color').map(v => ({ name: v.value, hex: v.hex })) || [];
-            return availableColors.length > 1;
+            
+            // Get unique color values
+            const uniqueColors = availableColors.filter((color, index, self) => 
+              index === self.findIndex(c => (c.name || c.hex) === (color.name || color.hex))
+            );
+            
+            return uniqueColors.length > 1;
           })() && (
             <div className="mb-6">
               <h3 className="text-sm font-medium text-gray-900 mb-3">Color</h3>
               <div className="flex gap-3">
-                {(product.colors || 
-                  product.variants?.filter(v => v.type === 'color').map(v => ({ name: v.value, hex: v.hex })) || []
-                ).map((color) => (
+                {(() => {
+                  const availableColors = product.colors || 
+                    product.variants?.filter(v => v.type === 'color').map(v => ({ name: v.value, hex: v.hex })) || [];
+                  
+                  // Get unique colors only
+                  const uniqueColors = availableColors.filter((color, index, self) => 
+                    index === self.findIndex(c => (c.name || c.hex) === (color.name || color.hex))
+                  );
+                  
+                  return uniqueColors;
+                })().map((color) => (
                   <button
                     key={color.name || color.hex}
                     onClick={() => setSelectedColor(color.hex || color.name)}
