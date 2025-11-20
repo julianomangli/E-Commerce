@@ -314,3 +314,31 @@ model VisitorProfile {
 
   @@map("visitor_profiles")
 }
+
+// Analytics Events for detailed tracking
+model AnalyticsEvent {
+  id        String   @id @default(cuid())
+  eventType String   // page_view, product_view, add_to_cart, etc.
+  sessionId String?
+  userId    String?
+  clientIP  String?
+  userAgent String?
+  eventData Json?    // Additional event data
+  timestamp DateTime @default(now())
+
+  @@map("analytics_events")
+}
+
+// Visitor Sessions for tracking user sessions
+model VisitorSession {
+  id        String   @id @default(cuid())
+  sessionId String   @unique
+  userId    String?
+  clientIP  String?
+  userAgent String?
+  firstSeen DateTime @default(now())
+  lastSeen  DateTime @updatedAt
+  pageViews Int      @default(1)
+
+  @@map("visitor_sessions")
+}

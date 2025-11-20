@@ -27,6 +27,19 @@ export default function RootLayout({ children }) {
             <Analytics />
           </WishlistProvider>
         </CartProvider>
+        {/* Analytics Script */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              // Initialize enhanced analytics
+              (function() {
+                if (typeof window !== 'undefined') {
+                  import('/lib/analytics-enhanced.js');
+                }
+              })();
+            `,
+          }}
+        />
       </body>
     </html>
   )

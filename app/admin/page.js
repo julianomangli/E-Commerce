@@ -14,7 +14,7 @@ export default function AdminLogin() {
     // Check if already authenticated
     const isAdmin = localStorage.getItem('admin_authenticated')
     if (isAdmin === 'true') {
-      router.push('/admin/dashboard')
+      router.push('/admin/dashboard-new')
     }
   }, [router])
 
@@ -33,7 +33,7 @@ export default function AdminLogin() {
     if (password.trim() === ADMIN_PASSWORD.trim()) {
       localStorage.setItem('admin_authenticated', 'true')
       localStorage.setItem('admin_login_time', Date.now().toString())
-      router.push('/admin/dashboard')
+      router.push('/admin/dashboard-new')
     } else {
       setError(`Invalid password. Access denied. Expected: "${ADMIN_PASSWORD}"`)
       setPassword('')
