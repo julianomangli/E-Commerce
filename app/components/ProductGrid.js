@@ -41,7 +41,7 @@ function textClassFor(hex) {
   }
 }
 
-export default function ProductGrid({ products = demoProducts, onAddToCart }) {
+export default function ProductGrid({ products = [], onAddToCart }) {
   const router = useRouter();
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
   const [selectedColors, setSelectedColors] = useState({});
@@ -169,10 +169,17 @@ export default function ProductGrid({ products = demoProducts, onAddToCart }) {
                     </p>
                   </div>
 
-                  {/* Colors */}
-                  {colors.length > 0 && (
+                  {/* Colors - only show if multiple unique colors exist */}
+                  {(() => {
+                    const uniqueColors = colors.filter((color, index, self) => 
+                      index === self.findIndex(c => c.name === color.name)
+                    );
+                    return uniqueColors.length > 1;
+                  })() && (
                     <div className="mt-3 flex flex-wrap items-center gap-2">
-                      {colors.map((c) => {
+                      {colors.filter((color, index, self) => 
+                        index === self.findIndex(c => c.name === color.name)
+                      ).map((c) => {
                         const isActive = chosenColor === c.name;
                         const textClass = textClassFor(c.hex);
                         return (
@@ -250,97 +257,5 @@ export default function ProductGrid({ products = demoProducts, onAddToCart }) {
   );
 }
 
-/* ~10 Fixed Demo Products with normal color names
----------------------------------------------------------- */
-export const demoProducts = [
-  {
-    id: 1,
-    name: "Basic Tee",
-    imageSrc:
-      "https://tailwindcss.com/plus-assets/img/ecommerce-images/product-page-01-related-product-01.jpg",
-    price: "24€",
-    sizes: ["S", "M", "L", "XL"],
-    colors: ["black", "white", "navy"],
-  },
-  {
-    id: 2,
-    name: "Graphic Tee",
-    imageSrc:
-      "https://tailwindcss.com/plus-assets/img/ecommerce-images/product-page-01-related-product-02.jpg",
-    price: "29€",
-    sizes: ["S", "M", "L"],
-    colors: ["white", "gray", "black"],
-  },
-  {
-    id: 3,
-    name: "Premium Hoodie",
-    imageSrc:
-      "https://tailwindcss.com/plus-assets/img/ecommerce-images/product-page-01-related-product-03.jpg",
-    price: "59€",
-    sizes: ["M", "L", "XL"],
-    colors: ["gray", "charcoal", "black"],
-  },
-  {
-    id: 4,
-    name: "Zip Hoodie",
-    imageSrc:
-      "https://tailwindcss.com/plus-assets/img/ecommerce-images/product-page-01-related-product-04.jpg",
-    price: "64€",
-    sizes: ["S", "M", "L", "XL"],
-    colors: ["black", "olive", "white"],
-  },
-  {
-    id: 5,
-    name: "Lightweight Jacket",
-    imageSrc:
-      "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-02-image-card-01.jpg",
-    price: "89€",
-    sizes: ["M", "L", "XL"],
-    colors: ["black", "khaki"],
-  },
-  {
-    id: 6,
-    name: "Crewneck Sweater",
-    imageSrc:
-      "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-02-image-card-02.jpg",
-    price: "54€",
-    sizes: ["S", "M", "L", "XL"],
-    colors: ["cream", "charcoal", "navy"],
-  },
-  {
-    id: 7,
-    name: "Relaxed Chinos",
-    imageSrc:
-      "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-02-image-card-03.jpg",
-    price: "48€",
-    sizes: ["S", "M", "L", "XL"],
-    colors: ["beige", "olive", "black"],
-  },
-  {
-    id: 8,
-    name: "Denim Jacket",
-    imageSrc:
-      "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-02-image-card-06.jpg",
-    price: "99€",
-    sizes: ["M", "L", "XL"],
-    colors: ["denim", "black"],
-  },
-  {
-    id: 9,
-    name: "Athletic Shorts",
-    imageSrc:
-      "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-02-image-card-05.jpg",
-    price: "32€",
-    sizes: ["S", "M", "L"],
-    colors: ["black", "blue", "gray"],
-  },
-  {
-    id: 10,
-    name: "Everyday Cap",
-    imageSrc:
-      "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-02-image-card-04.jpg",
-    price: "19€",
-    sizes: [],
-    colors: ["black", "navy", "white"],
-  },
-];
+/* Demo products removed to prevent fallback display */
+export const demoProducts = [];

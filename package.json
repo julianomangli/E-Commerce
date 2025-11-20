@@ -14,13 +14,12 @@
   "scripts": {
     "dev": "next dev",
     "build": "prisma generate && prisma db push && next build",
-    "postbuild": "prisma db push && node scripts/add-featured-products.js",
     "start": "next start",
     "lint": "next lint",
     "db:push": "prisma db push",
     "db:seed": "node scripts/add-featured-products.js",
     "sync:images": "node scripts/sync-printful-with-images.js",
-    "vercel-build": "prisma generate && prisma db push && node scripts/add-featured-products.js && next build",
+    "vercel-build": "prisma generate && prisma db push && next build",
     "postinstall": "prisma generate"
   },
   "dependencies": {
