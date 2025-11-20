@@ -217,20 +217,51 @@ export default function ProductDetailsPage({ params }) {
 
         {/* Product Details */}
         <div className="flex flex-col">
-          <div className="mb-6">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-4 leading-tight">
+          <div className="mb-8">
+            {/* Product Title */}
+            <div className="mb-6">
+              <h1 className="text-4xl font-bold text-gray-900 leading-tight tracking-tight">
                 {product.name}
               </h1>
-              <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-4 mb-4">
-                <p className="text-4xl font-bold text-green-700 flex items-center">
-                  <span className="text-green-600 text-2xl mr-2">€</span>
-                  {product.price.toFixed(2)}
-                  <span className="ml-3 text-lg font-normal text-green-600 bg-green-100 px-3 py-1 rounded-full">
-                    Free Shipping
-                  </span>
-                </p>
+            </div>
+            
+            {/* Professional Price Display */}
+            <div className="mb-6">
+              <div className="flex items-baseline space-x-2 mb-2">
+                <span className="text-5xl font-bold text-gray-900">
+                  €{product.price.toFixed(2)}
+                </span>
+                <span className="text-lg text-gray-500 font-medium">
+                  EUR
+                </span>
               </div>
+              
+              {/* Price Features */}
+              <div className="flex flex-wrap gap-3 mt-4">
+                <div className="flex items-center bg-green-50 border border-green-200 rounded-full px-4 py-2">
+                  <svg className="w-4 h-4 text-green-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span className="text-sm font-medium text-green-800">Free Shipping</span>
+                </div>
+                
+                <div className="flex items-center bg-blue-50 border border-blue-200 rounded-full px-4 py-2">
+                  <svg className="w-4 h-4 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span className="text-sm font-medium text-blue-800">Quality Guaranteed</span>
+                </div>
+                
+                <div className="flex items-center bg-purple-50 border border-purple-200 rounded-full px-4 py-2">
+                  <svg className="w-4 h-4 text-purple-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                  <span className="text-sm font-medium text-purple-800">Fast Delivery</span>
+                </div>
+              </div>
+              
+              {/* Price Line */}
+              <div className="border-t border-gray-200 mt-6"></div>
             </div>
           </div>
 
